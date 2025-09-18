@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>FedEx shipping</h1>
+    <form method="post" action="/shipping/fedex/process-cartons">
+        <label for="ship_date">Ship date</label>
+        <input type="date" id="ship_date" name="ship_date" required />
+
+        <label for="service">Service</label>
+        <select id="service" name="service" required>
+            <option value="FEDEX_GROUND">Ground</option>
+            <option value="STANDARD_OVERNIGHT">Standard Overnight</option>
+            <option value="PRIORITY_OVERNIGHT">Priority Overnight</option>
+            <option value="FEDEX_2_DAY">2nd Day</option>
+            <option value="FEDEX_EXPRESS_SAVER">Express Saver</option>
+        </select>
+
+        <label for="billing">Billing</label>
+        <select id="billing" name="billing" required>
+            <option value="COLLECT">Collect</option>
+            <option value="SENDER">Sender</option>
+            <option value="RECIPIENT">Recipient</option>
+            <option value="THIRD_PARTY">Third Party</option>
+        </select>
+
+        <label for="third_party_account_number">Third party account number</label>
+        <input type="text" id="third_party_account_number" name="third_party_account_number" placeholder="" />
+
+        <label for="air_auth">Air auth</label>
+        <input type="text" id="air_auth" name="air_auth" placeholder="" />
+
+        <label for="saturday_delivery">Saturday
+            Delivery</label>
+        <input type="checkbox" id="saturday_delivery" name="saturday_delivery" />
+
+        <label for="carton_numbers">Carton numbers</label>
+        <textarea id="carton_numbers" name="carton_numbers" rows="10" cols="50" required></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h1>View History</h1>
+    <form method="post" action="/shipping/history/date-form">
+        <label for="ship_date_history">Ship date</label>
+        <input type="date" id="ship_date_history" name="ship_date_history" required />
+
+        <label for="detailed">Full detail</label>
+        <input type="checkbox" id="detailed" name="detailed" />
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

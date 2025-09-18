@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <button>
+        <a href="/shipping/history/{{ ship_date }}/excel">Export Excel</a>
+    </button>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                {% if detailed is not none %}
+                <th>Shipment ID (For internal use only)</th>
+                {% endif %}
+                <th>K-ERP carton number</th>
+                <th>FedEx tracking number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for shipment in shipments %}
+            <tr>
+                {% if detailed is not none %}
+                <td>
+                    <script>document.write(format_datetime_detailed("{{ shipment.created }}"));</script>
+                </td>
+                {% else %}
+                <td>
+                    <script>document.write(format_datetime("{{ shipment.created }}"));</script>
+                </td>
+                {% endif %}
+                {% if detailed is not none %}
+                <td>{{ shipment.id }}</td>
+                {% endif %}
+                <td>{{ shipment.carton_number }}</td>
+                <td>{{ shipment.tracking_number }}</td>
+                <td>{{ shipment.status }}</td>
+                <td><button>
+                        <a href="/shipping/shipment/{{ shipment.id }}/fedex/create-label-request" target="_blank">
+                            FedEx request data
+                        </a>
+                    </button></td>
+                <td><button>
+                        <a href="/shipping/shipment/{{ shipment.id }}/fedex/create-label-response" target="_blank">
+                            FedEx response data
+                        </a>
+                    </button></td>
+                <td><button>
+                        <a href="/shipping/shipment/{{ shipment.id }}/zpl" target="_blank">
+                            Label ZPL data
+                        </a>
+                    </button></td>
+                <td><button>
+                        <a href="/shipping/shipment/{{ shipment.id }}/support-data" target="_blank">
+                            Support data
+                        </a>
+                    </button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

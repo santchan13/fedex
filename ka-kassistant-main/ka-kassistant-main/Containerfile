@@ -1,0 +1,34 @@
+FROM python:3.13-slim@sha256:f3614d98f38b0525d670f287b0474385952e28eb43016655dd003d0e28cf8652
+
+COPY --from=ghcr.io/astral-sh/uv:0.7.19@sha256:2dcbc74e60ed6d842122ed538f5267c80e7cde4ff1b6e66a199b89972496f033 /uv /bin/
+
+# Define Git SHA build argument for sentry
+ARG git_sha="development"
+ENV GIT_SHA=$git_sha
+
+WORKDIR /app
+
+COPY scripts/entrypoint.sh /app/entrypoint.sh
+
+COPY uv.lock pyproject.toml ./
+RUN --mount=type=secret,id=cloudsmith_username \
+    --mount=type=secret,id=cloudsmith_password \
+    UV_INDEX_CLOUDSMITH_USERNAME=$(cat /run/secrets/cloudsmith_username) \
+    UV_INDEX_CLOUDSMITH_PASSWORD=$(cat /run/secrets/cloudsmith_password) \
+    uv sync --frozen --no-editable --no-default-groups --no-install-project
+
+COPY alembic.ini alembic.ini
+COPY migrations migrations
+COPY src/ src/
+COPY templates/ templates/
+COPY static/ static/
+RUN uv sync --frozen --no-editable --no-default-groups
+
+RUN adduser --disabled-password knights_apparel
+RUN chown -R knights_apparel:knights_apparel /app
+USER knights_apparel
+
+# HTTP
+EXPOSE 8000
+
+ENTRYPOINT ["sh", "./entrypoint.sh"]

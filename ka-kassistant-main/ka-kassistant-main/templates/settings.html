@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Settings</h1>
+    <form method="post" action="/settings/setup">
+        <label for="ship_from_company">
+            Ship from company
+        </label>
+        <input type="text" id="ship_from_company" name="ship_from_company" value="{{ settings.ship_from_company or ''}}"
+            required />
+
+        <label for="ship_from_name">Ship from name</label>
+        <input type="text" id="ship_from_name" name="ship_from_name" value="{{ settings.ship_from_name or ''}}"
+            required />
+
+        <label for="ship_from_phone">Ship from phone</label>
+        <input type="text" id="ship_from_phone" name="ship_from_phone" value="{{ settings.ship_from_phone or ''}}"
+            required />
+
+        <label for="ship_from_address_1">
+            Ship from address 1
+        </label>
+        <input type="text" id="ship_from_address_1" name="ship_from_address_1"
+            value="{{ settings.ship_from_address_1 or ''}}" required />
+
+        <label for="ship_from_address_2">
+            Ship from address 2
+        </label>
+        <input type="text" id="ship_from_address_2" name="ship_from_address_2"
+            value="{{ settings.ship_from_address_2 or ''}}" />
+
+        <label for="ship_from_city">Ship from city</label>
+        <input type="text" id="ship_from_city" name="ship_from_city" value="{{ settings.ship_from_city or ''}}"
+            required />
+
+        <label for="ship_from_state">
+            Ship from state code
+        </label>
+        <input type="text" id="ship_from_state" name="ship_from_state" value="{{ settings.ship_from_state or ''}}"
+            minlength="2" maxlength="2" required />
+
+        <label for="ship_from_postal_code">
+            Ship from postal code
+        </label>
+        <input type="text" id="ship_from_postal_code" name="ship_from_postal_code"
+            value="{{ settings.ship_from_postal_code or ''}}" required />
+
+        <label for="ship_from_country_code">
+            Ship from country code
+        </label>
+        <input type="text" id="ship_from_country_code" name="ship_from_country_code"
+            value="{{ settings.ship_from_country_code or ''}}" minlength="2" maxlength="2" required />
+
+        <label for="fedex_label_size">Label size</label>
+        <select id="fedex_label_size" name="fedex_label_size" required>
+            <option>STOCK_4X6</option>
+            <option>STOCK_4X675_LEADING_DOC_TAB</option>
+            <option>STOCK_4X675_TRAILING_DOC_TAB</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('fedex_label_size').value = "{{ settings.fedex_label_size or 'STOCK_4X6'}}";
+    </script>
+</div>
+{% endblock %}

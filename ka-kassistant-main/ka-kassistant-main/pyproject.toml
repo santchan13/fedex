@@ -1,0 +1,109 @@
+[project]
+name = "kassistant"
+requires-python = ">=3.13"
+dependencies = [
+    # Metrics
+    "sentry-sdk>=2.10.0",
+    # Config
+    "pydantic-settings>=2.3.4",
+    # Database
+    "alembic>=1.13.2",
+    "psycopg[binary]>=3.2.1",
+    "sqlalchemy>=2.0.31",
+    # Web
+    "uvicorn[standard]>=0.30.3",
+    "litestar>=2.10.0",
+    "python-multipart>=0.0.9",
+    "jinja2>=3.1.4",
+    # K-ERP
+    "kerp-sdk>=0.0.0",
+    # HTTP
+    "httpx>=0.27.0",
+    # Excel reporting
+    "xlsxwriter>=3.2.0",
+]
+dynamic = ["version"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/kassistant/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kassistant"]
+
+[dependency-groups]
+dev = [
+    "nox>=2024.4.15",
+    "pre-commit>=3.7.1",
+    "ruff>=0.5.2",
+    "mypy>=1.10.1",
+]
+tests = [
+    "pytest>=8.2.2",
+    "pytest-randomly>=3.15.0",
+    "pytest-alembic>=0.11.0",
+    "coverage>=7.6.1",
+    "httpx>=0.27.0",
+]
+
+[tool.uv.sources]
+kerp-sdk = { index = "cloudsmith" }
+
+[[tool.uv.index]]
+name = "cloudsmith"
+url = "https://dl.cloudsmith.io/basic/untw-vnd/knights-apparel/python/simple/"
+explicit = true
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+ignore = [
+    "CPY001", # (Missing copyright notice at top of file)
+    "RUF029", # (Function `` is declared `async`, but doesn't `await` or use `async` features.) - all routes are async
+    "DOC501", # (Raised exception `HTTPException` missing from docstring) - Routes get autodoc
+    "DOC201", # (`return` is not documented in docstring) - Routes get autodoc
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"docs/*" = [
+    "INP001", # (File `tests/*.py` is part of an implicit namespace package. Add an `__init__.py`.) - Docs are not modules
+]
+"tests/*" = [
+    "INP001", # (File `tests/*.py` is part of an implicit namespace package. Add an `__init__.py`.) - Tests are not modules
+    "S101", # (Use of `assert` detected) - Yes, that's the point
+]
+"migrations/*" = [
+    "INP001", # (File `migrations/*.py` is part of an implicit namespace package. Add an `__init__.py`.) - Migrations are not modules
+    "D103", # (Missing docstring in public function) - Migrations only contain upgrade and downgrade
+]
+"scripts/*" = [
+    "INP001", # # (File `scripts/*.py` is part of an implicit namespace package. Add an `__init__.py`.) - Scripts are not modules
+]
+"src/kassistant/models/*" = [
+    "N815", # (Variable `x` in class scope should not be mixedCase) - Mocking external models
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.mypy]
+plugins = [
+  "pydantic.mypy",
+]
+
+[[tool.mypy.overrides]]
+module = ["xlsxwriter.*"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = [
+    "kassistant",
+]

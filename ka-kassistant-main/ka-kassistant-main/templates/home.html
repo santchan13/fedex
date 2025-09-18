@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Welcome to KAssistant</h1>
+    <p>Version: {{ version }}<br>Git SHA: {{ git_sha }}</p>
+
+    <form method="get" action="/settings/setup">
+        <button type="submit">Settings</button>
+    </form>
+</div>
+{% endblock %}
